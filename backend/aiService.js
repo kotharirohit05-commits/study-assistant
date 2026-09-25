@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+const { validateStudyData } = require("./validateStudyData");
+
 let aiClient = null;
 
 async function getAIClient() {
@@ -30,7 +32,9 @@ Create:
 - 5 flashcards
 - 5 multiple-choice quiz questions
 
-For each flashcard provide a question and answer.
+For each flashcard provide:
+- question
+- answer
 
 For each quiz question provide:
 - question
@@ -111,7 +115,21 @@ Make the answers clear and suitable for learning.
     throw new Error("Gemini returned an empty response.");
   }
 
-  return JSON.parse(response.text);
+  let studyData;
+
+  try {
+    studyData = JSON.parse(response.text);
+  } catch (error) {
+    throw new Error("Gemini returned invalid JSON.");
+  }
+
+  const validationResult = validateStudyData(studyData);
+
+  if (!validationResult.valid) {
+    throw new Error(validationResult.error);
+  }
+
+  return validationResult.data;
 }
 
 module.exports = {

@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import FlashcardList from "./components/FlashcardList";
 import Quiz from "./components/Quiz";
+import validateStudyData from "./utils/validateStudyData";
+import generateStudyMaterial from "./services/studyApi";
 
 function App() {
   const [input, setInput] = useState("");
   const [studyData, setStudyData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const requestIdRef = useRef(0);
 
   const handleGenerate = async () => {
     const trimmedInput = input.trim();
@@ -16,41 +20,47 @@ function App() {
       return;
     }
 
+    const requestId = ++requestIdRef.current;
+
     setLoading(true);
     setError("");
     setStudyData(null);
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/generate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            input: trimmedInput,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to generate study material.");
-      }
-
-      const data = await response.json();
+      const data = await generateStudyMaterial(trimmedInput);
 
       console.log("AI response:", data);
 
-      setStudyData(data);
+      // Ignore stale responses
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+
+      // Validate response before rendering
+      const validationResult = validateStudyData(data);
+
+      if (!validationResult.valid) {
+        setError(validationResult.error);
+        return;
+      }
+
+      setStudyData(validationResult.data);
     } catch (error) {
       console.error("Generate error:", error);
 
+      // Ignore errors from stale requests
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+
       setError(
-        "Unable to generate study material. Please try again."
+        error.message ||
+          "Unable to generate study material. Please try again."
       );
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   };
 
@@ -59,9 +69,12 @@ function App() {
   };
 
   const handleNewTopic = () => {
+    requestIdRef.current += 1;
+
     setStudyData(null);
     setError("");
     setInput("");
+    setLoading(false);
   };
 
   return (
