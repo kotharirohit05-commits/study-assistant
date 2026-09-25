@@ -27,7 +27,7 @@ function FlashcardList({ flashcards }) {
       </div>
 
       <Flashcard
-       
+       key={currentIndex}
         question={currentCard.question}
         answer={currentCard.answer}
       />
