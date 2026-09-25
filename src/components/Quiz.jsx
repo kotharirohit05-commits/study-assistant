@@ -28,6 +28,9 @@ function Quiz({ questions }) {
 
   const currentQuestion = quizQuestions[currentIndex];
 
+  const progress =
+    ((currentIndex + 1) / quizQuestions.length) * 100;
+
   const handleAnswerSelect = (optionIndex) => {
     if (answered) return;
 
@@ -44,7 +47,7 @@ function Quiz({ questions }) {
     }
   };
 
-  const handleNext = () => {
+const handleNext = () => {
   const isLastQuestion =
     currentIndex === quizQuestions.length - 1;
 
@@ -55,6 +58,7 @@ function Quiz({ questions }) {
     return;
   }
 
+  
   setQuizCompleted(true);
 
   if (
@@ -80,26 +84,61 @@ function Quiz({ questions }) {
   }
 
   if (quizCompleted) {
-    return (
-      <div className="mt-10 rounded-2xl bg-white p-6 text-center shadow-md">
-        <h3 className="text-2xl font-bold text-gray-900">
-          Quiz Complete!
-        </h3>
+    const totalQuestions = quizQuestions.length;
+    const incorrectAnswers = totalQuestions - score;
+    const percentage = Math.round(
+      (score / totalQuestions) * 100
+    );
 
-        <p className="mt-3 text-gray-600">
-          Your score: {score} / {quizQuestions.length}
+    return (
+      <div className="mt-10 rounded-2xl bg-white p-8 text-center shadow-md">
+        <p className="text-sm font-medium uppercase tracking-wider text-gray-500">
+          Quiz Complete
         </p>
 
-        {wrongQuestions.length > 0 ? (
+        <h3 className="mt-3 text-3xl font-bold text-gray-900">
+          {percentage}%
+        </h3>
+
+        <p className="mt-2 text-lg text-gray-600">
+          You scored{" "}
+          <span className="font-bold text-gray-900">
+            {score} / {totalQuestions}
+          </span>
+        </p>
+
+        <div className="mx-auto mt-8 grid max-w-sm grid-cols-2 gap-4">
+          <div className="rounded-xl bg-gray-50 p-4">
+            <p className="text-sm text-gray-500">
+              Correct
+            </p>
+
+            <p className="mt-1 text-2xl font-bold text-green-600">
+              {score}
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-gray-50 p-4">
+            <p className="text-sm text-gray-500">
+              Incorrect
+            </p>
+
+            <p className="mt-1 text-2xl font-bold text-red-600">
+              {incorrectAnswers}
+            </p>
+          </div>
+        </div>
+
+        {score < totalQuestions ? (
           <button
             onClick={handleRetryWrong}
-            className="mt-6 rounded-xl bg-black px-5 py-3 font-semibold text-white transition hover:bg-gray-800"
+            className="mt-8 rounded-xl bg-black px-6 py-3 font-semibold text-white transition hover:bg-gray-800"
           >
             Retry Incorrect Questions
           </button>
         ) : (
-          <div>
-            <p className="mt-6 text-lg font-semibold text-green-600">
+          <div className="mt-8">
+            <p className="text-lg font-semibold text-green-600">
               Perfect score! 🎉
             </p>
 
@@ -114,7 +153,8 @@ function Quiz({ questions }) {
 
   return (
     <div className="mt-10 rounded-2xl bg-white p-6 shadow-md">
-      <div className="mb-6 flex items-center justify-between">
+      {/* Quiz Header */}
+      <div className="mb-4 flex items-center justify-between">
         <h3 className="text-xl font-bold text-gray-900">
           Quiz
         </h3>
@@ -124,10 +164,20 @@ function Quiz({ questions }) {
         </p>
       </div>
 
+      {/* Progress Bar */}
+      <div className="mb-8 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+        <div
+          className="h-full rounded-full bg-black transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      {/* Question */}
       <h4 className="mb-6 text-lg font-semibold text-gray-900">
         {currentQuestion.question}
       </h4>
 
+      {/* Options */}
       <div className="space-y-3">
         {currentQuestion.options.map((option, index) => {
           const isCorrect =
@@ -158,8 +208,9 @@ function Quiz({ questions }) {
         })}
       </div>
 
+      {/* Feedback + Explanation */}
       {answered && (
-        <div className="mt-6">
+        <div className="mt-6 rounded-xl bg-gray-50 p-4">
           {selectedAnswer === currentQuestion.correctAnswer ? (
             <p className="font-semibold text-green-600">
               Correct! ✓
@@ -172,9 +223,20 @@ function Quiz({ questions }) {
               ]}.
             </p>
           )}
+
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-gray-700">
+              Why?
+            </p>
+
+            <p className="mt-1 text-sm leading-relaxed text-gray-600">
+              {currentQuestion.explanation}
+            </p>
+          </div>
         </div>
       )}
 
+      {/* Next / Finish */}
       {answered && (
         <button
           onClick={handleNext}

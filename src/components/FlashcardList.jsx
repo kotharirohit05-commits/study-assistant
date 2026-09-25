@@ -6,6 +6,9 @@ function FlashcardList({ flashcards }) {
 
   const currentCard = flashcards[currentIndex];
 
+  const progress =
+    ((currentIndex + 1) / flashcards.length) * 100;
+
   const handlePrevious = () => {
     setCurrentIndex((index) => index - 1);
   };
@@ -26,8 +29,16 @@ function FlashcardList({ flashcards }) {
         </p>
       </div>
 
+      {/* Progress Bar */}
+      <div className="mb-6 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+        <div
+          className="h-full rounded-full bg-black transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
       <Flashcard
-       key={currentIndex}
+        key={currentIndex}
         question={currentCard.question}
         answer={currentCard.answer}
       />

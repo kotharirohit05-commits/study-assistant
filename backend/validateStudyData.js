@@ -111,6 +111,17 @@ function validateStudyData(data) {
         error: "Quiz correctAnswer must be between 0 and 3.",
       };
     }
+
+    // Check explanation
+    if (
+      typeof quizQuestion.explanation !== "string" ||
+      !quizQuestion.explanation.trim()
+    ) {
+      return {
+        valid: false,
+        error: "Quiz explanation is missing or invalid.",
+      };
+    }
   }
 
   return {

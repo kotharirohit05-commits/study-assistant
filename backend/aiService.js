@@ -40,9 +40,11 @@ For each quiz question provide:
 - question
 - exactly 4 options
 - correctAnswer as the zero-based index of the correct option
+- explanation explaining why the correct answer is correct
 
 Keep the questions relevant to the user's input.
-Make the answers clear and suitable for learning.
+Avoid repetitive questions.
+Make the answers and explanations clear and suitable for learning.
 `;
 
   const response = await ai.models.generateContent({
@@ -68,10 +70,12 @@ Make the answers clear and suitable for learning.
                 question: {
                   type: "string",
                 },
+
                 answer: {
                   type: "string",
                 },
               },
+
               required: ["question", "answer"],
             },
           },
@@ -95,12 +99,17 @@ Make the answers clear and suitable for learning.
                 correctAnswer: {
                   type: "integer",
                 },
+
+                explanation: {
+                  type: "string",
+                },
               },
 
               required: [
                 "question",
                 "options",
                 "correctAnswer",
+                "explanation",
               ],
             },
           },
