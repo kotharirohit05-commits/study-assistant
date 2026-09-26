@@ -29,12 +29,18 @@ ${input}
 Generate useful study material for the user.
 
 Create:
+- 1 short study summary
 - 5 flashcards
 - 5 multiple-choice quiz questions
 
 For each flashcard provide:
 - question
 - answer
+
+For the study summary provide:
+- a concise explanation of the main concepts
+- 2 to 4 sentences
+- keep it easy to understand
 
 For each quiz question provide:
 - question
@@ -61,6 +67,9 @@ Make the answers and explanations clear and suitable for learning.
           topic: {
             type: "string",
           },
+          summary: {
+            type: "string",
+            },
 
           flashcards: {
             type: "array",
@@ -115,7 +124,7 @@ Make the answers and explanations clear and suitable for learning.
           },
         },
 
-        required: ["topic", "flashcards", "quiz"],
+        required: ["topic", "summary", "flashcards", "quiz"],
       },
     },
   });

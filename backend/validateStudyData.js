@@ -18,6 +18,17 @@ function validateStudyData(data) {
     };
   }
 
+  // Check summary
+  if (
+    typeof data.summary !== "string" ||
+    !data.summary.trim()
+  ) {
+    return {
+      valid: false,
+      error: "AI response has an invalid summary.",
+    };
+  }
+
   // Check flashcards
   if (
     !Array.isArray(data.flashcards) ||

@@ -168,14 +168,34 @@ function App() {
         {studyData && (
           <div>
             <div className="mb-8">
-              <p className="text-sm font-medium text-gray-500">
-                Topic
-              </p>
+  <p className="text-sm font-medium text-gray-500">
+    Topic
+  </p>
 
-              <h2 className="mt-1 text-2xl font-bold text-gray-900">
-                {studyData.topic}
-              </h2>
-            </div>
+  <h2 className="mt-1 text-2xl font-bold text-gray-900">
+    {studyData.topic}
+  </h2>
+
+  <div className="mb-8">
+  <p className="text-sm font-medium text-gray-500">
+    Topic
+  </p>
+
+  <h2 className="mt-1 text-2xl font-bold text-gray-900">
+    {studyData.topic}
+  </h2>
+
+  <div className="mt-6 rounded-2xl bg-gray-100 p-6">
+    <p className="text-sm font-semibold text-gray-700">
+      Quick Summary
+    </p>
+
+    <p className="mt-2 leading-relaxed text-gray-600">
+      {studyData.summary}
+    </p>
+  </div>
+</div>
+</div>
 
             <FlashcardList
               flashcards={studyData.flashcards}
